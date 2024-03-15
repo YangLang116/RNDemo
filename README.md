@@ -1,79 +1,81 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+## 页面导航
+- createNativeStackNavigator: App
+- createMaterialTopTabNavigator: HallTab
+- createBottomTabNavigator: MainPage
+- createDrawerNavigator: SettingPage
 
-# Getting Started
+## 网络请求
+- Fetch: ServiceApi
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## 数据储存
+- Storage: AppStorage
 
-## Step 1: Start the Metro Server
+## ReactHook
+- useContext / createContext
+- configureStore / createSlice / createAsyncThunk
+- useDispatch
+- useSelector / createSelector
+- useState
+- useRef / useImperativeHandle
+- useEffect
+- useCallback
+- React.memo / useMemo
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+## RN Hook
+- useFocusEffect
+- useBackHandler
 
-To start Metro, run the following command from the _root_ of your React Native project:
+```js
+function ScreenWithCustomBackBehavior() {
+  // ...
 
-```bash
-# using npm
-npm start
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (isSelectionModeEnabled()) {
+          disableSelectionMode();
+          return true;
+        } else {
+          return false;
+        }
+      };
 
-# OR using Yarn
-yarn start
+      const subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        onBackPress
+      );
+
+      return () => subscription.remove();
+    }, [isSelectionModeEnabled, disableSelectionMode])
+  );
+
+  // ...
+}
 ```
 
-## Step 2: Start your Application
+回调函数是倒序执行的（即后添加的函数先执行）。
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+- 如果某一个函数返回 true，则后续的函数都不会被调用。
+- 如果没有添加任何监听函数，或者所有的监听函数都返回 false，则会执行默认行为，退出应用。
 
-### For Android
+## 状态栏
+支持静态方法 / 支持组件方式
 
-```bash
-# using npm
-npm run android
+### 所有平台
+- hidden：是否隐藏状态栏。
+- barStyle： 设置状态栏文本的颜色。
+- animated：指定状态栏的变化是否应以动画形式呈现。目前支持这几种样式：backgroundColor, barStyle 和 hidden。
 
-# OR using Yarn
-yarn android
-```
+### android属性
+- translucent：指定状态栏是否透明。设置为 true 时，应用会延伸到状态栏之下绘制（即所谓“沉浸式”——被状态栏遮住一部分）。常和带有半透明背景色的状态栏搭配使用。
+- backgroundColor： 状态栏的背景色。
 
-### For iOS
+### iOS属性
+- networkActivityIndicatorVisible：指定是否显示网络活动提示符。
+- showHideTransition：通过hidden属性来显示或隐藏状态栏时所使用的动画效果。默认值为'fade'。
 
-```bash
-# using npm
-npm run ios
+## 安全区域
+SafeAreaView的目的是在一个“安全”的可视区域内渲染内容。具体来说就是因为目前有 iPhone X 这样的带有“刘海”的全面屏设备，所以需要避免内容渲染到不可见的“刘海”范围内。本组件目前仅支持 iOS 设备以及 iOS 11 或更高版本。
 
-# OR using Yarn
-yarn ios
-```
+SafeAreaView会自动根据系统的各种导航栏、工具栏等预留出空间来渲染内部内容。更重要的是，它还会考虑到设备屏幕的局限，比如屏幕四周的圆角或是顶部中间不可显示的“刘海”区域。
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 3: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
