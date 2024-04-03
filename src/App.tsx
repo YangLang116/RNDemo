@@ -13,7 +13,7 @@ const App = () => {
   return (
     <Provider store={appStore}>
       <NavigationContainer>
-        <NavigatorContract.Navigator screenOptions={{header: () => null}}>
+        <NavigatorContract.Navigator screenOptions={{headerShown: false}}>
           <NavigatorContract.Screen name={'login'} component={LoginPage} />
           <NavigatorContract.Screen name={'main'} component={MainPage} />
           <NavigatorContract.Screen name={'home'} component={HomePage} />

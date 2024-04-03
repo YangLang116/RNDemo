@@ -1,31 +1,14 @@
 import * as React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useFocusEffect} from '@react-navigation/native';
 import HallTab from './tabs/hall/HallTab';
 import MsgTab from './tabs/MsgTab';
 import NetTab from './tabs/NetTab';
-import MineTab from './tabs/MineTab';
 import {MainNavigationContext} from '../../base/constant/AppContext';
-import {StatusBar} from 'react-native';
+import {Image, StatusBar, StyleSheet} from 'react-native';
+import {isAndroid} from '../../utils/PlatformUtils';
 
 const NavigatorContract = createBottomTabNavigator();
-
-const buildScreen = ({name, component, labelName, labelIcon}) => {
-  // noinspection JSUnusedGlobalSymbols
-  return (
-    <NavigatorContract.Screen
-      name={name}
-      component={component}
-      options={{
-        tabBarLabel: labelName,
-        tabBarIcon: ({color}) => (
-          <MaterialIcons name={labelIcon} color={color} size={24} />
-        ),
-      }}
-    />
-  );
-};
 
 const MainPage = props => {
   useFocusEffect(
@@ -41,10 +24,14 @@ const MainPage = props => {
   useFocusEffect(
     React.useCallback(() => {
       StatusBar.setBarStyle('dark-content');
-      StatusBar.setTranslucent(true);
-      StatusBar.setBackgroundColor('transparent');
+      if (isAndroid()) {
+        StatusBar.setTranslucent(true);
+        StatusBar.setBackgroundColor('transparent');
+      }
       return () => {
-        StatusBar.setTranslucent(false);
+        if (isAndroid()) {
+          StatusBar.setTranslucent(false);
+        }
       };
     }, []),
   );
@@ -53,34 +40,69 @@ const MainPage = props => {
     <MainNavigationContext.Provider value={props.navigation}>
       <NavigatorContract.Navigator
         backBehavior={'none'}
-        screenOptions={{header: () => null}}>
-        {buildScreen({
-          name: 'hall',
-          component: HallTab,
-          labelName: '大厅',
-          labelIcon: 'home',
-        })}
-        {buildScreen({
-          name: 'msg',
-          component: MsgTab,
-          labelName: '消息',
-          labelIcon: 'chat',
-        })}
-        {buildScreen({
-          name: 'net',
-          component: NetTab,
-          labelName: '网络',
-          labelIcon: 'wifi',
-        })}
-        {buildScreen({
-          name: 'mine',
-          component: MineTab,
-          labelName: '我的',
-          labelIcon: 'person',
-        })}
+        screenOptions={{headerShown: false}}>
+        <NavigatorContract.Screen
+          name="hall"
+          component={HallTab}
+          options={{
+            tabBarLabel: '大厅',
+            tabBarIcon: () => (
+              <Image
+                source={require('../../assets/main.png')}
+                style={styles.icon}
+              />
+            ),
+          }}
+        />
+        <NavigatorContract.Screen
+          name="msg"
+          component={MsgTab}
+          options={{
+            tabBarLabel: '消息',
+            tabBarIcon: () => (
+              <Image
+                source={require('../../assets/chat.png')}
+                style={styles.icon}
+              />
+            ),
+          }}
+        />
+        <NavigatorContract.Screen
+          name="net"
+          component={NetTab}
+          options={{
+            tabBarLabel: '网络',
+            tabBarIcon: () => (
+              <Image
+                source={require('../../assets/network.png')}
+                style={styles.icon}
+              />
+            ),
+          }}
+        />
+        <NavigatorContract.Screen
+          name="mine"
+          component={HallTab}
+          options={{
+            tabBarLabel: '我的',
+            tabBarIcon: () => (
+              <Image
+                source={require('../../assets/personal.png')}
+                style={styles.icon}
+              />
+            ),
+          }}
+        />
       </NavigatorContract.Navigator>
     </MainNavigationContext.Provider>
   );
 };
 
 export default MainPage;
+
+const styles = StyleSheet.create({
+  icon: {
+    width: 20,
+    height: 20,
+  },
+});
